@@ -2,22 +2,22 @@ package app
 
 import (
 	"api-gateway-SiteZtta/cfg"
-	"api-gateway-SiteZtta/internal/transport/http"
+	TransHttp "api-gateway-SiteZtta/internal/transport/http"
 	"context"
 	"errors"
 	"log/slog"
-	HTTP "net/http"
+	"net/http"
 	"time"
 )
 
 type App struct {
-	Server *http.Server
+	Server *TransHttp.Server
 	log    *slog.Logger
 }
 
 func New(cfg cfg.Config, log *slog.Logger) *App {
 	return &App{
-		Server: http.New(cfg, log),
+		Server: TransHttp.NewServer(cfg, log),
 		log:    log,
 	}
 }
@@ -32,20 +32,17 @@ func (a *App) Run(ctx context.Context) error {
 	select {
 	case err := <-errch:
 		return err
-
 	case <-ctx.Done():
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-
+		// Shutdown gracefully with a 5-second timeout (server stops acepting new connections and waits for 5 seconds for existing connections to finish)
 		if err := a.Server.Shutdown(shutdownCtx); err != nil {
 			return err
 		}
-
 		err := <-errch
-		if err != nil && !errors.Is(err, HTTP.ErrServerClosed) {
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			return err
 		}
-
 		return nil
 	}
 }
