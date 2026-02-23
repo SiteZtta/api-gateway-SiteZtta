@@ -33,14 +33,13 @@ func (a *App) Run(ctx context.Context) error {
 	case err := <-errch:
 		return err
 	case <-ctx.Done():
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second) // parent ctx is already cancelled
 		defer cancel()
 		// Shutdown gracefully with a 5-second timeout (server stops acepting new connections and waits for 5 seconds for existing connections to finish)
 		if err := a.Server.Shutdown(shutdownCtx); err != nil {
 			return err
 		}
-		err := <-errch
-		if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		if err := <-errch; err != nil && !errors.Is(err, http.ErrServerClosed) {
 			return err
 		}
 		return nil

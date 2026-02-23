@@ -9,7 +9,7 @@ import "github.com/gin-gonic/gin"
 // @ID 		     	sign-up
 // @Accept     		json
 // @Produce      	json
-// @param input body v1.SignUpRequst true "account info"
+// @param input body dto.SignUpRequest true "account info"
 // @Success 200 {integer} integer "id"
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse
@@ -25,7 +25,7 @@ func (h *Handler) signUpV1(c *gin.Context) {
 // @ID 		     	sign-in
 // @Accept     		json
 // @Produce      	json
-// @param input body v1.SignInRequst true "account info"
+// @param input body dto.SignInRequest true "account info"
 // @Success 200 {integer} integer "id"
 // @Failure 400,404 {object} errorResponse
 // @Failure 500 {object} errorResponse

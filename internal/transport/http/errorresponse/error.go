@@ -1,4 +1,4 @@
-package http
+package errorresponse
 
 import "github.com/gin-gonic/gin"
 

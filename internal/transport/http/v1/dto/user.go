@@ -1,6 +1,6 @@
 package dto
 
-type SignUpRequst struct {
+type SignUpRequest struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Phone    string `json:"phone"`
@@ -11,7 +11,7 @@ type UserIdResponse struct {
 	UserId string `json:"userId"`
 }
 
-type SignInRequst struct {
+type SignInRequest struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }

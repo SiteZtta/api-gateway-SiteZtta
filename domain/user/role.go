@@ -1,9 +1,10 @@
 package user
 
-type Role int
+type Role int32
 
 const (
-	User Role = iota
+	Unspecified Role = iota
+	User
 	Admin
 )
 
