@@ -1,7 +1,7 @@
 package main
 
 import (
-	"api-gateway-SiteZtta/cfg"
+	"api-gateway-SiteZtta/config"
 	_ "api-gateway-SiteZtta/docs"
 	"api-gateway-SiteZtta/internal/app"
 	"api-gateway-SiteZtta/pkg/logger"
@@ -28,7 +28,7 @@ import (
 // @name Authorization
 func main() {
 	ctx := context.TODO()
-	cfg := cfg.MustLoad("local")
+	cfg := config.MustLoad("local")
 	log := logger.SetupLogger(cfg.Env)
 	log.Info("downloaded congig", slog.String("cfgEnv", cfg.Env), slog.Any("cfg", cfg))
 	app := app.New(cfg, log)

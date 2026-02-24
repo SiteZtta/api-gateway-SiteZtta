@@ -1,7 +1,7 @@
 package app
 
 import (
-	"api-gateway-SiteZtta/cfg"
+	"api-gateway-SiteZtta/config"
 	TransHttp "api-gateway-SiteZtta/internal/transport/http"
 	"context"
 	"errors"
@@ -15,7 +15,7 @@ type App struct {
 	log    *slog.Logger
 }
 
-func New(cfg cfg.Config, log *slog.Logger) *App {
+func New(cfg config.Config, log *slog.Logger) *App {
 	return &App{
 		Server: TransHttp.NewServer(cfg, log),
 		log:    log,

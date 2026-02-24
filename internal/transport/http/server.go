@@ -1,7 +1,7 @@
 package http
 
 import (
-	"api-gateway-SiteZtta/cfg"
+	"api-gateway-SiteZtta/config"
 	"context"
 	"fmt"
 	"log/slog"
@@ -14,11 +14,11 @@ type Server struct {
 	log        *slog.Logger
 }
 
-func NewServer(config cfg.Config, log *slog.Logger) *Server {
+func NewServer(config config.Config, log *slog.Logger) *Server {
 	server := &Server{
 		log: log,
 		HttpServer: &http.Server{
-			Addr:        net.JoinHostPort(config.HttpServer.Address, fmt.Sprint(config.HttpServer.Port)),
+			Addr:        net.JoinHostPort(config.HttpServer.Host, fmt.Sprint(config.HttpServer.Port)),
 			ReadTimeout: config.HttpServer.Timeout,
 			IdleTimeout: config.HttpServer.IdleTimeout,
 			Handler:     NewRouter(log).InitRoutes(),

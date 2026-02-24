@@ -1,4 +1,4 @@
-package cfg
+package config
 
 import (
 	"flag"
@@ -16,7 +16,7 @@ type Config struct {
 }
 
 type HttpServer struct {
-	Address     string        `mapstructure:"address"`
+	Host        string        `mapstructure:"host"`
 	Port        int           `mapstructure:"port"`
 	Timeout     time.Duration `mapstructure:"timeout"`
 	IdleTimeout time.Duration `mapstructure:"idle_timeout"`
@@ -24,16 +24,11 @@ type HttpServer struct {
 
 func MustLoad(cname string) Config {
 	path := fetchCfgDirPath()
-	defer func() {
-		if err := recover(); err != nil {
-			panic(fmt.Errorf("fatal error config file: %s", err))
-		}
-	}()
 	if path == "" {
-		panic(fmt.Errorf("config path is empty"))
+		panic("config path is empty")
 	}
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		panic(fmt.Errorf("config file not found: %s", path))
+		panic(fmt.Errorf("config file not found on path %s: %w", path, err))
 	}
 	// Setting viper
 	viper.AddConfigPath(path)
@@ -45,18 +40,18 @@ func MustLoad(cname string) Config {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_")) // ex: APP_HTTP_SERVER_PORT -> PORT
 	// Reading config
 	if err := viper.ReadInConfig(); err != nil {
-		panic(fmt.Errorf("fatal error reading config file: %s", err))
+		panic(fmt.Errorf("fatal error reading config file: %w", err))
 	}
 	cfg := Config{}
 	if err := viper.Unmarshal(&cfg); err != nil {
-		panic(fmt.Errorf("fatal error unmarshaling config: %s", err))
+		panic(fmt.Errorf("fatal error unmarshaling config: %w", err))
 	}
 	return cfg
 }
 
 func fetchCfgDirPath() string {
 	var path string
-	// --cfg="./cfg"
+	// --cfg="./config"
 	flag.StringVar(&path, "cfg", "", "path to cfg dir")
 	flag.Parse()
 	if path == "" {
