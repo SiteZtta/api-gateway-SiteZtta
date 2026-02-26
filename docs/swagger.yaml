@@ -5,19 +5,28 @@ definitions:
         type: string
       password:
         type: string
+    required:
+    - login
+    - password
     type: object
   dto.SignUpRequest:
     properties:
       email:
         type: string
       password:
+        minLength: 8
         type: string
       phone:
         type: string
       username:
         type: string
+    required:
+    - email
+    - password
+    - phone
+    - username
     type: object
-  http.errorResponse:
+  errorresponse.ErrorResponse:
     properties:
       message:
         type: string
@@ -36,6 +45,12 @@ info:
   title: Api-gateway-SiteZtta
   version: "1.0"
 paths:
+  /auth/test:
+    get:
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Test auth
   /auth/v1/sign-in/:
     post:
       consumes:
@@ -59,19 +74,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/http.errorResponse'
+            $ref: '#/definitions/errorresponse.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/http.errorResponse'
+            $ref: '#/definitions/errorresponse.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/http.errorResponse'
+            $ref: '#/definitions/errorresponse.ErrorResponse'
         default:
           description: ""
           schema:
-            $ref: '#/definitions/http.errorResponse'
+            $ref: '#/definitions/errorresponse.ErrorResponse'
       summary: SignInV1
       tags:
       - auth
@@ -98,19 +113,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/http.errorResponse'
+            $ref: '#/definitions/errorresponse.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/http.errorResponse'
+            $ref: '#/definitions/errorresponse.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/http.errorResponse'
+            $ref: '#/definitions/errorresponse.ErrorResponse'
         default:
           description: ""
           schema:
-            $ref: '#/definitions/http.errorResponse'
+            $ref: '#/definitions/errorresponse.ErrorResponse'
       summary: SignUpV1
       tags:
       - auth
@@ -119,6 +134,7 @@ schemes:
 - https
 securityDefinitions:
   ApiKeyAuth:
+    description: Type "Bearer" followed by a space and JWT token.
     in: header
     name: Authorization
     type: apiKey

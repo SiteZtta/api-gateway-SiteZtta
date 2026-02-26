@@ -2,10 +2,10 @@ package errorresponse
 
 import "github.com/gin-gonic/gin"
 
-type errorResponse struct {
+type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
 func NewErrorResponse(c *gin.Context, statusCode int, message string) {
-	c.AbortWithStatusJSON(statusCode, errorResponse{Message: message})
+	c.AbortWithStatusJSON(statusCode, ErrorResponse{Message: message})
 }

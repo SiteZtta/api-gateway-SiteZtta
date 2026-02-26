@@ -3,26 +3,35 @@ package http
 import (
 	"api-gateway-SiteZtta/domain/user"
 	"api-gateway-SiteZtta/internal/transport/http/errorresponse"
+	"api-gateway-SiteZtta/pkg/logger"
+	"fmt"
 	"net/http"
+	"strings"
 
+	sitezttav1 "github.com/SiteZtta/protos-SiteZtta/gen/go/auth"
 	"github.com/gin-gonic/gin"
 )
 
 const (
 	authorizationHeader = "Authorization"
-	userCtx             = "TokenClaims"
+	userCtx             = "AuthInfo"
 )
 
 func (h *Handler) userIdentity(c *gin.Context) {
 	const fn = "api-gateway-SiteZtta.internal.transport.http.middleware.userIdentity"
 	log := h.log.With("fn", fn)
-	tokeClaims := h.getTokenClaims(c)
-	if tokeClaims.UserId == 0 {
-		log.Error("token claims is empty")
+	authInfo, err := h.getAuthInfo(c)
+	if err != nil {
+		log.Error("error getting authInfo", logger.Err(err))
+		errorresponse.NewErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+	if authInfo == nil {
+		log.Error("authInfo is empty")
 		errorresponse.NewErrorResponse(c, http.StatusUnauthorized, "Authentication is required")
 		return
 	}
-	c.Set(userCtx, tokeClaims)
+	c.Set(userCtx, authInfo)
 	c.Next()
 }
 
@@ -32,26 +41,49 @@ func (h *Handler) adminIdentity(c *gin.Context) {
 	log := h.log.With("fn", fn)
 	claims, _ := c.Get(userCtx)
 	if claims == nil {
-		log.Error("token claims is empty")
+		log.Error("authInfo is empty")
 		errorresponse.NewErrorResponse(c, http.StatusUnauthorized, "Authentication is required")
 		return
 	}
-	tokenClaims, ok := claims.(user.AuthInfo)
+	authInfo, ok := claims.(user.AuthInfo)
 	if !ok {
-		log.Error("token claims is not user.TokenClaims")
+		log.Error("token claims is not user.AuthInfo")
 		errorresponse.NewErrorResponse(c, http.StatusUnauthorized, "Authentication is required")
 		return
 	}
-	if tokenClaims.Role != user.Admin {
+	if authInfo.Role != user.Admin {
 		log.Error("token claims is not admin")
 		errorresponse.NewErrorResponse(c, http.StatusForbidden, "Access denied: Admin access only")
 		return
 	}
-	c.Set(userCtx, tokenClaims)
+	c.Set(userCtx, authInfo)
 	c.Next()
 }
 
-func (h *Handler) getTokenClaims(c *gin.Context) user.AuthInfo {
-	// TODO: to implement grpc method func (IAuthorization) ParseToken(token string) (auth.TokenClaims, error)
-	return user.AuthInfo{}
+func (h *Handler) getAuthInfo(c *gin.Context) (*user.AuthInfo, error) {
+	token := c.GetHeader(authorizationHeader)
+	fmt.Printf("token: %s\n", token)
+	if token == "" {
+		return nil, fmt.Errorf("missing authorization header")
+	}
+	token = strings.TrimPrefix(token, "Bearer ")
+	req := &sitezttav1.TokenRequest{Token: token}
+	// Business logic
+	resp, err := h.AuthServiceClient.ValidateToken(c, req)
+	if err != nil {
+		return nil, err
+	}
+	authInfo := &user.AuthInfo{
+		UserId: resp.UserId,
+		Role:   user.Role(resp.Role),
+	}
+	return authInfo, nil
+}
+
+// @Summary Test auth
+// @Security BearerAuth
+// @Router /auth/test [get]
+func (h *Handler) testAuth(c *gin.Context) {
+	user := c.MustGet(userCtx)
+	c.JSON(200, user)
 }

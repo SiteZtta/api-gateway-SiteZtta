@@ -1,6 +1,7 @@
 package http
 
 import (
+	"api-gateway-SiteZtta/config"
 	"log/slog"
 
 	"github.com/gin-gonic/gin"
@@ -13,9 +14,10 @@ type Router struct {
 	log *slog.Logger
 }
 
-func NewRouter(log *slog.Logger) *Router {
+func NewRouter(log *slog.Logger, cfg config.Config) *Router {
 	return &Router{
 		log: log,
+		h:   NewHandler(cfg, log),
 	}
 }
 
@@ -23,6 +25,7 @@ func (r *Router) InitRoutes() *gin.Engine {
 	router := gin.New()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.registerV1(router)
+	router.GET("/auth/test", r.h.userIdentity, r.h.testAuth)
 	return router
 }
 

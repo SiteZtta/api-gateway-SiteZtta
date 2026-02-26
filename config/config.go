@@ -11,8 +11,10 @@ import (
 )
 
 type Config struct {
-	Env        string     `mapstructure:"env"`
-	HttpServer HttpServer `mapstructure:"http_server"`
+	Env        string        `mapstructure:"env"`
+	HttpServer HttpServer    `mapstructure:"http_server"`
+	Clients    ClientsConfig `mapstructure:"clients"`
+	AppSecret  string        `mapstructure:"app_secret"`
 }
 
 type HttpServer struct {
@@ -20,6 +22,18 @@ type HttpServer struct {
 	Port        int           `mapstructure:"port"`
 	Timeout     time.Duration `mapstructure:"timeout"`
 	IdleTimeout time.Duration `mapstructure:"idle_timeout"`
+}
+
+type GrpcClient struct {
+	Host         string        `mapstructure:"host"`
+	Port         int           `mapstructure:"port"`
+	Timeout      time.Duration `mapstructure:"timeout"`
+	RetriesCount int           `mapstructure:"retries_count"`
+	Insecure     bool          `mapstructure:"insecure"`
+}
+
+type ClientsConfig struct {
+	AuthService GrpcClient `mapstructure:"auth_service"`
 }
 
 func MustLoad(cname string) Config {
