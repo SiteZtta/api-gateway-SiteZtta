@@ -25,7 +25,7 @@ func (r *Router) InitRoutes() *gin.Engine {
 	router := gin.New()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.registerV1(router)
-	router.GET("/auth/test", r.h.userIdentity, r.h.testAuth)
+	router.GET("/auth/test", r.h.userIdentity, r.h.adminIdentity, r.h.testAuth)
 	return router
 }
 

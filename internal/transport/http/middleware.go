@@ -45,7 +45,7 @@ func (h *Handler) adminIdentity(c *gin.Context) {
 		errorresponse.NewErrorResponse(c, http.StatusUnauthorized, "Authentication is required")
 		return
 	}
-	authInfo, ok := claims.(user.AuthInfo)
+	authInfo, ok := claims.(*user.AuthInfo)
 	if !ok {
 		log.Error("token claims is not user.AuthInfo")
 		errorresponse.NewErrorResponse(c, http.StatusUnauthorized, "Authentication is required")
@@ -56,7 +56,6 @@ func (h *Handler) adminIdentity(c *gin.Context) {
 		errorresponse.NewErrorResponse(c, http.StatusForbidden, "Access denied: Admin access only")
 		return
 	}
-	c.Set(userCtx, authInfo)
 	c.Next()
 }
 
@@ -73,15 +72,17 @@ func (h *Handler) getAuthInfo(c *gin.Context) (*user.AuthInfo, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("protobuf authInfo: %v\n", resp)
 	authInfo := &user.AuthInfo{
 		UserId: resp.UserId,
 		Role:   user.Role(resp.Role),
 	}
+	fmt.Printf("authInfo: %v\n", authInfo)
 	return authInfo, nil
 }
 
 // @Summary Test auth
-// @Security BearerAuth
+// @Security ApiKeyAuth
 // @Router /auth/test [get]
 func (h *Handler) testAuth(c *gin.Context) {
 	user := c.MustGet(userCtx)

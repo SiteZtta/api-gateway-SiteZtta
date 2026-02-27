@@ -49,7 +49,7 @@ paths:
     get:
       responses: {}
       security:
-      - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Test auth
   /auth/v1/sign-in/:
     post:

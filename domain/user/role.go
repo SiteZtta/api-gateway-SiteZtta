@@ -11,10 +11,10 @@ const (
 func (r Role) String() string {
 	switch r {
 	case User:
-		return "user"
+		return "USER"
 	case Admin:
-		return "admin"
+		return "ADMIN"
 	default:
-		return "unknown"
+		return "UNSPECIFIED"
 	}
 }
