@@ -6,7 +6,7 @@ import (
 	"log/slog"
 	"time"
 
-	sitezttav1 "github.com/SiteZtta/protos-SiteZtta/gen/go/auth"
+	sitezttav2 "github.com/SiteZtta/protos-SiteZtta/gen/go/auth"
 	grpclog "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	grpcretry "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/retry"
 	"google.golang.org/grpc"
@@ -15,7 +15,7 @@ import (
 )
 
 type Client struct {
-	api sitezttav1.AuthServiceClient
+	api sitezttav2.AuthServiceClient
 	log *slog.Logger
 }
 
@@ -44,12 +44,12 @@ func New(addr string,
 		return nil, fmt.Errorf("%s:%w", fn, err)
 	}
 	return &Client{
-		api: sitezttav1.NewAuthServiceClient(cc),
+		api: sitezttav2.NewAuthServiceClient(cc),
 		log: log,
 	}, nil
 }
 
-func (c *Client) CreateUser(ctx context.Context, req *sitezttav1.SignUpRequest) (*sitezttav1.UserIdResponse, error) {
+func (c *Client) CreateUser(ctx context.Context, req *sitezttav2.SignUpRequest) (*sitezttav2.UserIdResponse, error) {
 	const fn = "api-gateway-SiteZtta.internal.clients.auth-service.grpc.createUser"
 
 	resp, err := c.api.CreateUser(ctx, req)
@@ -60,7 +60,7 @@ func (c *Client) CreateUser(ctx context.Context, req *sitezttav1.SignUpRequest) 
 	return resp, nil
 }
 
-func (c *Client) GenerateToken(ctx context.Context, req *sitezttav1.SignInRequest) (*sitezttav1.TokenResponse, error) {
+func (c *Client) GenerateToken(ctx context.Context, req *sitezttav2.SignInRequest) (*sitezttav2.TokenResponse, error) {
 	const fn = "api-gateway-SiteZtta.internal.clients.auth-service.grpc.generateToken"
 
 	resp, err := c.api.GenerateToken(ctx, req)
@@ -71,7 +71,7 @@ func (c *Client) GenerateToken(ctx context.Context, req *sitezttav1.SignInReques
 	return resp, nil
 }
 
-func (c *Client) ValidateToken(ctx context.Context, req *sitezttav1.TokenRequest) (*sitezttav1.AuthInfo, error) {
+func (c *Client) ValidateToken(ctx context.Context, req *sitezttav2.TokenRequest) (*sitezttav2.AuthInfo, error) {
 	const fn = "api-gateway-SiteZtta.internal.clients.auth-service.grpc.validateToken"
 
 	resp, err := c.api.ValidateToken(ctx, req)
