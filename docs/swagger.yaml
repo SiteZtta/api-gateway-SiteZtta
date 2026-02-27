@@ -45,12 +45,14 @@ info:
   title: Api-gateway-SiteZtta
   version: "1.0"
 paths:
-  /auth/test:
+  /api/v1/admin:
     get:
       responses: {}
       security:
       - ApiKeyAuth: []
-      summary: Test auth
+      summary: Admin personal cabinet for managing the site
+      tags:
+      - admin
   /auth/v1/sign-in/:
     post:
       consumes:

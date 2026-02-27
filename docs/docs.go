@@ -24,14 +24,17 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/test": {
+        "/api/v1/admin": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "summary": "Test auth",
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Admin personal cabinet for managing the site",
                 "responses": {}
             }
         },

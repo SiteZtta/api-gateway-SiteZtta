@@ -56,6 +56,7 @@ func (h *Handler) adminIdentity(c *gin.Context) {
 		errorresponse.NewErrorResponse(c, http.StatusForbidden, "Access denied: Admin access only")
 		return
 	}
+	fmt.Printf("adminIdentity: %v\n", authInfo)
 	c.Next()
 }
 
@@ -79,12 +80,4 @@ func (h *Handler) getAuthInfo(c *gin.Context) (*user.AuthInfo, error) {
 	}
 	fmt.Printf("authInfo: %v\n", authInfo)
 	return authInfo, nil
-}
-
-// @Summary Test auth
-// @Security ApiKeyAuth
-// @Router /auth/test [get]
-func (h *Handler) testAuth(c *gin.Context) {
-	user := c.MustGet(userCtx)
-	c.JSON(200, user)
 }

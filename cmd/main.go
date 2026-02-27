@@ -29,7 +29,7 @@ import (
 // @description Type "Bearer" followed by a space and JWT token.
 func main() {
 	ctx := context.TODO()
-	cfg := config.MustLoad("local")
+	cfg := config.MustLoad()
 	log := logger.SetupLogger(cfg.Env)
 	log.Info("downloaded congig", slog.String("cfgEnv", cfg.Env), slog.Any("cfg", cfg))
 	app := app.New(cfg, log)

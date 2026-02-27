@@ -25,7 +25,6 @@ func (r *Router) InitRoutes() *gin.Engine {
 	router := gin.New()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.registerV1(router)
-	router.GET("/auth/test", r.h.userIdentity, r.h.adminIdentity, r.h.testAuth)
 	return router
 }
 
@@ -34,5 +33,9 @@ func (r *Router) registerV1(router *gin.Engine) {
 	{
 		authV1.POST("/sign-up", r.h.signUpV1)
 		authV1.POST("/sign-in", r.h.signInV1)
+	}
+	api := router.Group("/api/v1")
+	{
+		api.GET("/admin", r.h.userIdentity, r.h.adminIdentity, r.h.adminCabinetV1)
 	}
 }

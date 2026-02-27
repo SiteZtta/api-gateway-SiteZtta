@@ -36,7 +36,7 @@ type ClientsConfig struct {
 	AuthService GrpcClient `mapstructure:"auth_service"`
 }
 
-func MustLoad(cname string) Config {
+func MustLoad() Config {
 	path := fetchCfgDirPath()
 	if path == "" {
 		panic("config path is empty")
@@ -45,9 +45,7 @@ func MustLoad(cname string) Config {
 		panic(fmt.Errorf("config file not found on path %s: %w", path, err))
 	}
 	// Setting viper
-	viper.AddConfigPath(path)
-	viper.SetConfigName(cname)
-	viper.SetConfigType("yaml")
+	viper.SetConfigFile(path)
 	// Env variables
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("APP")
@@ -65,7 +63,7 @@ func MustLoad(cname string) Config {
 
 func fetchCfgDirPath() string {
 	var path string
-	// --cfg="./config"
+	// --cfg="./config/local.yaml"
 	flag.StringVar(&path, "cfg", "", "path to cfg dir")
 	flag.Parse()
 	if path == "" {
