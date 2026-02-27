@@ -6,7 +6,7 @@ import (
 	"api-gateway-SiteZtta/pkg/logger"
 	"net/http"
 
-	sitezttav1 "github.com/SiteZtta/protos-SiteZtta/gen/go/auth"
+	sitezttav2 "github.com/SiteZtta/protos-SiteZtta/gen/go/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,7 +37,7 @@ func (h *Handler) signUpV1(c *gin.Context) {
 		return
 	}
 	// Business logic
-	req := &sitezttav1.SignUpRequest{
+	req := &sitezttav2.SignUpRequest{
 		UserName: input.Username,
 		Email:    input.Email,
 		Phone:    input.Phone,
@@ -80,7 +80,7 @@ func (h *Handler) signInV1(c *gin.Context) {
 		return
 	}
 	// Business logic
-	req := &sitezttav1.SignInRequest{
+	req := &sitezttav2.SignInRequest{
 		Login:    input.Login,
 		Password: input.Password,
 	}

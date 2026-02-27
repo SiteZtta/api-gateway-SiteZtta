@@ -1,5 +1,7 @@
 package dto
 
+import "api-gateway-SiteZtta/domain/user"
+
 type SignUpRequest struct {
 	Username string `json:"username" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
@@ -18,4 +20,10 @@ type UserIdResponse struct {
 
 type TokenResponse struct {
 	Token string `json:"token"`
+}
+
+type AuthInfoResponse struct {
+	UserId   int64     `json:"userId"`
+	Role     user.Role `json:"role"`
+	Username string    `json:"username"`
 }

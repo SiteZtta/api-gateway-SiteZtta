@@ -11,4 +11,10 @@ clients:
     timeout: 5s
     retries_count: 3
     insecure: false
+  ui_service:
+    host: "localhost"
+    port: 4200
+    timeout: 5s
+    idle_timeout: 60s
+    insecure: false
 app_secret: "secret"

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	sitezttav1 "github.com/SiteZtta/protos-SiteZtta/gen/go/auth"
+	sitezttav2 "github.com/SiteZtta/protos-SiteZtta/gen/go/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -67,7 +67,7 @@ func (h *Handler) getAuthInfo(c *gin.Context) (*user.AuthInfo, error) {
 		return nil, fmt.Errorf("missing authorization header")
 	}
 	token = strings.TrimPrefix(token, "Bearer ")
-	req := &sitezttav1.TokenRequest{Token: token}
+	req := &sitezttav2.TokenRequest{Token: token}
 	// Business logic
 	resp, err := h.AuthServiceClient.ValidateToken(c, req)
 	if err != nil {
@@ -75,8 +75,9 @@ func (h *Handler) getAuthInfo(c *gin.Context) (*user.AuthInfo, error) {
 	}
 	fmt.Printf("protobuf authInfo: %v\n", resp)
 	authInfo := &user.AuthInfo{
-		UserId: resp.UserId,
-		Role:   user.Role(resp.Role),
+		UserId:   resp.UserId,
+		Role:     user.Role(resp.Role),
+		Username: resp.UserName,
 	}
 	fmt.Printf("authInfo: %v\n", authInfo)
 	return authInfo, nil

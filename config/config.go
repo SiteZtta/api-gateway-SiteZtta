@@ -32,8 +32,17 @@ type GrpcClient struct {
 	Insecure     bool          `mapstructure:"insecure"`
 }
 
+type UiClient struct {
+	Host        string        `mapstructure:"host"`
+	Port        int           `mapstructure:"port"`
+	Timeout     time.Duration `mapstructure:"timeout"`
+	IdleTimeout time.Duration `mapstructure:"idle_timeout"`
+	Insecure    bool          `mapstructure:"insecure"`
+}
+
 type ClientsConfig struct {
 	AuthService GrpcClient `mapstructure:"auth_service"`
+	UiService   UiClient   `mapstructure:"ui_service"`
 }
 
 func MustLoad() Config {

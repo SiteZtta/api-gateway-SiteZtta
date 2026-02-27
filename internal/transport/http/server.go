@@ -21,7 +21,7 @@ func NewServer(config config.Config, log *slog.Logger) *Server {
 			Addr:        net.JoinHostPort(config.HttpServer.Host, fmt.Sprint(config.HttpServer.Port)),
 			ReadTimeout: config.HttpServer.Timeout,
 			IdleTimeout: config.HttpServer.IdleTimeout,
-			Handler:     NewRouter(log, config).InitRoutes(),
+			Handler:     NewRouter(log, config).InitRoutes(config),
 		},
 	}
 	return server
